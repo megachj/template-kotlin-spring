@@ -1,4 +1,5 @@
 // -------------------- 루트 프로젝트에만 적용하는 설정: 시작 --------------------
+
 /**
  * plugins {} 구문은 Gradle 2.1 이후 도입되었으며, 빌드 스크립트(build.gradle.kts)의 최상단에서 사용해야하고 플러그인 의존성 관리에 효율적이다.
  * 반면 apply {} 구문은 더 전통적인 방식으로 스크립트내 어느 곳에서나 사용할 수 있으며, 조건부로 플러그인을 적용하는 경우 유용하다.
@@ -64,7 +65,7 @@ plugins {
      *
      * @see Gradle 플러그인: https://plugins.gradle.org/plugin/org.jetbrains.kotlin.plugin.jpa
      */
-     kotlin("plugin.jpa") apply false
+    kotlin("plugin.jpa") apply false
 
     /**
      * Spring Boot 애플리케이션을 위한 Gradle 플러그인이다.
@@ -150,6 +151,11 @@ allprojects {
     ext {
         // set("xxxVersion", "x.y.z")
     }
+
+    tasks {
+        bootJar { enabled = false }
+        jar { enabled = false }
+    }
 }
 
 // 코드가 작성되는 leaf 하위 프로젝트에 적용되는 설정
@@ -201,7 +207,7 @@ configure(subprojects.filter { it.subprojects.isEmpty() }) {
 }
 
 // 애플리케이션 하위 프로젝트에 적용되는 설정
-configure(subprojects.filter { it.subprojects.isEmpty() }.filter { it.path.contains(":app")}) {
+configure(subprojects.filter { it.subprojects.isEmpty() }.filter { it.path.contains(":app") }) {
     apply {
         plugin("com.palantir.docker")
     }
@@ -212,7 +218,7 @@ configure(subprojects.filter { it.subprojects.isEmpty() }.filter { it.path.conta
 }
 
 // 라이브러리 하위 프로젝트에 적용되는 설정
-configure(subprojects.filter { it.subprojects.isEmpty() }.filter { !it.path.contains(":app")}) {
+configure(subprojects.filter { it.subprojects.isEmpty() }.filter { !it.path.contains(":app") }) {
     tasks {
         bootJar { enabled = false }
         jar { enabled = true }
