@@ -1,0 +1,43 @@
+task checkProjectDependenciesOnRules {
+    group = "sunset"
+    description = "멀티 모듈 프로젝트에서 프로젝트간 의존성 규칙을 검사하는 태스크"
+
+    doLast {
+        println("check module dependency on rules")
+        println('=' * 20)
+        allprojects.forEach { project ->
+            println("Project [${project.name}, path: ${project.path}]")
+            final List<ProjectDependency> projectDependencies = fetchProjectDependencies(project as Project)
+            projectDependencies.forEach {
+                this.checkDependencyRules(project as Project, it)
+            }
+            println()
+        }
+    }
+}
+
+private static List<ProjectDependency> fetchProjectDependencies(Project project) {
+    return project.configurations.collectMany { Configuration configuration -> configuration.allDependencies }
+        .findAll { Dependency dependency -> dependency instanceof ProjectDependency}
+        .collect { it as ProjectDependency }
+        .unique()
+        .collect()
+        .unique()
+}
+
+private def checkDependencyRules(Project project, ProjectDependency projectDependency) {
+    def moduleToAbleDependencyMap = [
+            "independent"   : [],
+            "core"          : [],
+            "domain"        : ["independent", "core", "domain"],
+            "system"        : ["independent", "core", "system"],
+            "app"           : ["independent", "core", "domain", "system"]
+    ]
+
+    println("checkProjectDependenciesOnRules 태스크: checkDependencyRules ${project.path} -> ${projectDependency.dependencyProject.path}")
+    String moduleLayer = project.path.split(":")[1]
+    String dependencyModuleLayer = projectDependency.dependencyProject.path.split(":")[1]
+    if (!moduleToAbleDependencyMap.get(moduleLayer)?.contains(dependencyModuleLayer)) {
+        throw new GradleException("프로젝트간 의존성 규칙 위반입니다. `${project.path}` 가 `${projectDependency.dependencyProject.path}`를 의존하고 있습니다.")
+    }
+}

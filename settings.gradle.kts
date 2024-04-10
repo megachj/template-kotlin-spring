@@ -13,6 +13,9 @@ pluginManagement {
     val pluginIds = mapOf(
         "org.springframework.boot" to "3.2.4",
         "io.spring.dependency-management" to "1.1.4",
+        "org.jlleitschuh.gradle.ktlint" to "12.1.0",
+        "com.palantir.docker" to "0.36.0",
+        "com.github.node-gradle.node" to "7.0.2",
     )
 
     resolutionStrategy {
