@@ -134,6 +134,10 @@ allprojects {
         mavenCentral()
     }
 
+    apply {
+        plugin("org.jetbrains.kotlin.jvm") // plugin("kotlin") 와 같다.
+    }
+
     /**
      * Gradle 빌드시 사용할 JDK 의 버전을 지정한다.
      * 이는 실제로 컴파일러와 런타임 환경이 사용하는 JDK 의 버전을 지정하는 것으로, Kotlin 컴파일러 뿐만 아니라 Java 소스 파일을 컴파일하거나 프로젝트를
@@ -151,19 +155,14 @@ allprojects {
     ext {
         // set("xxxVersion", "x.y.z")
     }
-
-    tasks {
-        bootJar { enabled = false }
-        jar { enabled = false }
-    }
 }
 
 // 코드가 작성되는 leaf 하위 프로젝트에 적용되는 설정
 configure(subprojects.filter { it.subprojects.isEmpty() }) {
     apply {
-        plugin("kotlin")
-        plugin("kotlin.kapt")
-        plugin("kotlin-spring")
+        plugin("org.jetbrains.kotlin.jvm") // plugin("kotlin") 와 같다.
+        plugin("org.jetbrains.kotlin.kapt")
+        plugin("org.jetbrains.kotlin.plugin.spring") // plugin("kotlin-spring") 와 같다
         plugin("org.springframework.boot")
         plugin("io.spring.dependency-management")
         plugin("org.jlleitschuh.gradle.ktlint")
