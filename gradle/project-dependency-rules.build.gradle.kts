@@ -19,13 +19,13 @@ tasks.register("checkProjectDependenciesOnRules") {
     }
 }
 
-private fun fetchProjectDependencies(project: Project): List<ProjectDependency> {
+fun fetchProjectDependencies(project: Project): List<ProjectDependency> {
     return project.configurations.flatMap { configuration ->
         configuration.dependencies.withType(ProjectDependency::class.java)
     }.distinct()
 }
 
-private fun checkDependencyRules(project: Project, projectDependency: ProjectDependency) {
+fun checkDependencyRules(project: Project, projectDependency: ProjectDependency) {
     val moduleToAbleDependencyMap = mapOf(
         "independent" to listOf<String>(),
         "core" to listOf(),

@@ -195,14 +195,46 @@ configure(subprojects.filter { it.subprojects.isEmpty() }) {
         }
     }
 
+    // TODO: sourceSets 설정
+
+    // TODO: integrationTest 설정
+
     // TODO: 확인
     dependencies {
+        /**
+         * Kotlin 코드에서 Java 8의 추가 기능(예: java.util.stream, java.time API 등)을 활용할 수 있는 Kotlin 표준 라이브러리의 확장 기능에 접근할 수 있다.
+         * 그래서 Java 8 특화 기능을 Kotlin에서 더 편리하게 사용할 수 있는 이점을 누릴 수 있다.
+         *
+         * 참고) 코틀린 컴파일러의 Java 버전과는 큰 상관이 없다. Java 17 로 컴파일되더라도 stdlib-jdk8 을 추가하면 확장 기능을 통해 더 편리하게 jdk8 내용을 사용할 수 있다.
+         */
+        implementation(kotlin("stdlib-jdk8"))
+
+        /**
+         * Kotlin 리플렉션 API에 접근할 수 있게된다. 리플렉션을 이용해 실행 중에 클래스, 함수, 프로퍼티의 메타데이터를 검사하고 조작할 수 있다.
+         * 이 의존성 없이는 고급 리플렉션 기능에 접근할 수 없으며, 코드에서 런타임에 타입 정보를 사용하는 데 제한이 생긴다.
+         */
+        implementation(kotlin("reflect"))
+
+        /**
+         *  Kotlin 표준 라이브러리의 테스트 모듈을 프로젝트의 테스트 컴파일 클래스패스에 추가하는 것이다.
+         *  이를 통해 Kotlin 코드를 테스트할 때 필요한 기능들, 예를 들어 JUnit과 함께 사용할 수 있는 어서션(assertion) 함수들을 사용할 수 있게 된다.
+         *  Kotlin 테스트 라이브러리는 테스트 코드 작성을 보다 간편하게 하고, Kotlin 특유의 기능들을 테스트에 활용할 수 있게 돕는다.
+         */
         testImplementation(kotlin("test"))
 
         implementation("org.springframework.boot:spring-boot-starter")
-        implementation("org.springframework.boot:spring-boot-starter-data-jpa")
 
-        testImplementation("org.springframework.boot:spring-boot-starter-test")
+        /**
+         * Spring Boot 애플리케이션을 위한 테스트 스타터 패키지이다.
+         * JUnit, Spring Test, Spring Boot Test, AssertJ, Hamcrest, Mockito, JSONassert 및 JsonPath와 같은
+         * 여러 유명한 테스팅 라이브러리가 포함되어 있어, 스프링 부트 애플리케이션을 테스트하는 데 필요한 대부분의 도구를 제공한다.
+         */
+        testImplementation("org.springframework.boot:spring-boot-starter-test") {
+            // junit4 기반인 모듈은 제외한다.
+            exclude(module = "junit")
+            // junit5 의 일부인데, junit4 기반의 테스트를 junit5 환경에서 실행할 수 있게 해주는 엔진이다. 레거시가 아니라면 필요없으므로 제외한다.
+            exclude(group = "org.junit.vintage", module = "junit-vintage-engine")
+        }
     }
 }
 
