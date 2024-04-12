@@ -52,8 +52,9 @@ plugins {
     id("org.gradle.toolchains.foojay-resolver-convention") apply false
 }
 
-include(":app:web-api:api")
 include(":app:batch:example-batch")
+include(":app:example-kafka-consumer")
+include(":app:example-web-api")
 include(":core:example-core")
 include(":domain:example-domain")
 include(":independent:example-independent")
